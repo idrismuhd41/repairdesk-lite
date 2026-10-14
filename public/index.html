@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RepairDesk Lite — By Idris M T</title>
+  <style>
+    :root {
+      --blue-900: #0f2c4d;
+      --blue-700: #1a4d80;
+      --blue-500: #2e7dd1;
+      --blue-100: #e6f0fa;
+      --blue-50:  #f5f9fd;
+      --gray-900: #1a202c;
+      --gray-600: #4a5568;
+      --gray-300: #cbd5e0;
+      --gray-100: #edf2f7;
+      --white:    #ffffff;
+      --green:    #2f855a;
+      --amber:    #b7791f;
+      --red:      #c53030;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--blue-50);
+      color: var(--gray-900);
+      min-height: 100vh;
+    }
+
+    header {
+      background: var(--blue-900);
+      color: var(--white);
+      padding: 20px 32px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    header .subtitle {
+      margin: 4px 0 0;
+      font-size: 13px;
+      color: var(--blue-100);
+      opacity: 0.85;
+    }
+
+    .toolbar {
+      padding: 20px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .toolbar .stats {
+      font-size: 14px;
+      color: var(--gray-600);
+    }
+
+    .toolbar .stats strong {
+      color: var(--blue-700);
+    }
+
+    button {
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 16px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-primary {
+      background: var(--blue-500);
+      color: var(--white);
+    }
+
+    .btn-primary:hover {
+      background: var(--blue-700);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--gray-600);
+      border: 1px solid var(--gray-300);
+      padding: 6px 10px;
+      font-size: 12px;
+    }
+
+    .btn-ghost:hover {
+      background: var(--gray-100);
+    }
+
+    .btn-danger {
+      background: transparent;
+      color: var(--red);
+      border: 1px solid var(--red);
+      padding: 6px 10px;
+      font-size: 12px;
+    }
+
+    .btn-danger:hover {
+      background: var(--red);
+      color: var(--white);
+    }
+
+    /* Kanban board */
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      padding: 0 32px 40px;
+    }
+
+    @media (max-width: 900px) {
+      .board {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .column {
+      background: var(--white);
+      border-radius: 10px;
+      padding: 16px;
+      min-height: 400px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .column-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--gray-100);
+    }
+
+    .column-header h2 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--gray-600);
+    }
+
+    .column-header .count {
+      background: var(--blue-100);
+      color: var(--blue-700);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+
+    .column[data-status="received"]    .count { background: #e6f0fa; color: var(--blue-700); }
+    .column[data-status="in_progress"] .count { background: #fef5e7; color: var(--amber); }
+    .column[data-status="completed"]   .count { background: #e6f5ec; color: var(--green); }
+
+    /* Ticket cards */
+    .card {
+      background: var(--blue-50);
+      border: 1px solid var(--gray-100);
+      border-left: 4px solid var(--blue-500);
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 10px;
+      transition: box-shadow 0.15s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .column[data-status="received"]    .card { border-left-color: var(--blue-500); }
+    .column[data-status="in_progress"] .card { border-left-color: var(--amber); }
+    .column[data-status="completed"]   .card { border-left-color: var(--green); }
+
+    .card .id {
+      font-size: 11px;
+      color: var(--gray-600);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .card .customer {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: 6px;
+    }
+
+    .card .device {
+      font-size: 13px;
+      color: var(--blue-700);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .card .issue {
+      font-size: 13px;
+      color: var(--gray-600);
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    .card .actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .card .actions select {
+      font-family: inherit;
+      font-size: 12px;
+      padding: 5px 8px;
+      border-radius: 4px;
+      border: 1px solid var(--gray-300);
+      background: var(--white);
+      flex: 1;
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--gray-300);
+      font-size: 13px;
+      padding: 24px 0;
+      font-style: italic;
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 44, 77, 0.5);
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 20px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--white);
+      border-radius: 10px;
+      padding: 24px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+
+    .modal h2 {
+      margin: 0 0 20px;
+      font-size: 18px;
+      color: var(--blue-900);
+    }
+
+    .modal label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gray-600);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+      margin-top: 14px;
+    }
+
+    .modal input,
+    .modal textarea {
+      width: 100%;
+      font-family: inherit;
+      font-size: 14px;
+      padding: 10px 12px;
+      border: 1px solid var(--gray-300);
+      border-radius: 6px;
+      background: var(--white);
+      color: var(--gray-900);
+    }
+
+    .modal input:focus,
+    .modal textarea:focus {
+      outline: none;
+      border-color: var(--blue-500);
+      box-shadow: 0 0 0 3px rgba(46, 125, 209, 0.15);
+    }
+
+    .modal textarea {
+      resize: vertical;
+      min-height: 70px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .modal-error {
+      background: #fff5f5;
+      color: var(--red);
+      font-size: 13px;
+      padding: 10px 12px;
+      border-radius: 6px;
+      margin-top: 12px;
+      display: none;
+    }
+
+    .modal-error.show {
+      display: block;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--gray-600);
+      font-size: 14px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--gray-900);
+      color: var(--white);
+      padding: 12px 18px;
+      border-radius: 8px;
+      font-size: 14px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.25s ease;
+      pointer-events: none;
+      z-index: 200;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast.error {
+      background: var(--red);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>RepairDesk Lite</h1>
+    <p class="subtitle">By Idris M T &middot; First Class Technologies &middot; Computer Repair Ticket Management</p>
+  </header>
+
+  <div class="toolbar">
+    <div class="stats" id="stats">Loading&hellip;</div>
+    <button class="btn-primary" id="new-ticket-btn">+ New Repair Ticket</button>
+  </div>
+
+  <div class="board" id="board">
+    <div class="loading">Loading tickets&hellip;</div>
+  </div>
+
+  <!-- New ticket modal -->
+  <div class="modal-backdrop" id="modal">
+    <div class="modal">
+      <h2>New Repair Ticket</h2>
+
+      <label for="f-customer">Customer name</label>
+      <input type="text" id="f-customer" placeholder="e.g. John Doe" />
+
+      <label for="f-device">Device *</label>
+      <input type="text" id="f-device" placeholder="e.g. Laptop, Desktop, Printer" />
+
+      <label for="f-issue">Issue *</label>
+      <textarea id="f-issue" placeholder="Describe the problem&hellip;"></textarea>
+
+      <div class="modal-error" id="modal-error"></div>
+
+      <div class="modal-actions">
+        <button class="btn-ghost" id="modal-cancel">Cancel</button>
+        <button class="btn-primary" id="modal-save">Create Ticket</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ---------- Config ----------
+    const API = "/api/repairs";
+
+    const COLUMNS = [
+      { status: "received",    label: "Received" },
+      { status: "in_progress", label: "In Progress" },
+      { status: "completed",   label: "Completed" }
+    ];
+
+    const STATUS_LABELS = {
+      received: "Received",
+      in_progress: "In Progress",
+      completed: "Completed",
+      cancelled: "Cancelled"
+    };
+
+    // ---------- State ----------
+    let tickets = [];
+
+    // ---------- DOM refs ----------
+    const boardEl       = document.getElementById("board");
+    const statsEl       = document.getElementById("stats");
+    const modalEl       = document.getElementById("modal");
+    const modalErrorEl  = document.getElementById("modal-error");
+    const toastEl       = document.getElementById("toast");
+    const newBtn        = document.getElementById("new-ticket-btn");
+    const cancelBtn     = document.getElementById("modal-cancel");
+    const saveBtn       = document.getElementById("modal-save");
+    const fCustomer     = document.getElementById("f-customer");
+    const fDevice       = document.getElementById("f-device");
+    const fIssue        = document.getElementById("f-issue");
+
+    // ---------- Utilities ----------
+    function escapeHtml(str) {
+      if (str == null) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function toast(message, isError = false) {
+      toastEl.textContent = message;
+      toastEl.className = "toast show" + (isError ? " error" : "");
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => {
+        toastEl.className = "toast";
+      }, 2800);
+    }
+
+    async function apiCall(url, options = {}) {
+      const res = await fetch(url, {
+        headers: { "Content-Type": "application/json" },
+        ...options
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data.message || `Request failed (${res.status})`);
+      }
+      return data;
+    }
+
+    // ---------- Rendering ----------
+    function render() {
+      // Group tickets by status
+      const grouped = { received: [], in_progress: [], completed: [] };
+      for (const t of tickets) {
+        if (grouped[t.status]) grouped[t.status].push(t);
+      }
+
+      boardEl.innerHTML = COLUMNS.map(col => {
+        const items = grouped[col.status] || [];
+        return `
+          <div class="column" data-status="${col.status}">
+            <div class="column-header">
+              <h2>${col.label}</h2>
+              <span class="count">${items.length}</span>
+            </div>
+            ${items.length
+              ? items.map(renderCard).join("")
+              : `<div class="empty">No tickets</div>`}
+          </div>
+        `;
+      }).join("");
+
+      // Update stats
+      const total = tickets.length;
+      const done = grouped.completed.length;
+      statsEl.innerHTML = `<strong>${total}</strong> total &middot; <strong>${done}</strong> completed`;
+    }
+
+    function renderCard(t) {
+      const options = COLUMNS.map(c =>
+        `<option value="${c.status}" ${c.status === t.status ? "selected" : ""}>${c.label}</option>`
+      ).join("");
+
+      return `
+        <div class="card" data-id="${t.id}">
+          <div class="id">#${t.id}</div>
+          <div class="customer">${escapeHtml(t.customerName || "Unknown customer")}</div>
+          <div class="device">${escapeHtml(t.device)}</div>
+          <div class="issue">${escapeHtml(t.issue)}</div>
+          <div class="actions">
+            <select data-action="status" data-id="${t.id}">${options}</select>
+            <button class="btn-danger" data-action="delete" data-id="${t.id}">Delete</button>
+          </div>
+        </div>
+      `;
+    }
+
+    // ---------- Data loading ----------
+    async function loadTickets() {
+      try {
+        const res = await apiCall(API);
+        tickets = res.data || [];
+        render();
+      } catch (err) {
+        boardEl.innerHTML = `<div class="loading">Failed to load tickets: ${escapeHtml(err.message)}</div>`;
+      }
+    }
+
+    // ---------- Actions ----------
+    async function changeStatus(id, newStatus) {
+      try {
+        await apiCall(`${API}/${id}`, {
+          method: "PATCH",
+          body: JSON.stringify({ status: newStatus })
+        });
+        const t = tickets.find(x => x.id === id);
+        if (t) t.status = newStatus;
+        render();
+        toast(`Ticket #${id} → ${STATUS_LABELS[newStatus]}`);
+      } catch (err) {
+        toast(err.message, true);
+        loadTickets();
+      }
+    }
+
+    async function deleteTicket(id) {
+      if (!confirm(`Delete ticket #${id}? This cannot be undone.`)) return;
+      try {
+        await apiCall(`${API}/${id}`, { method: "DELETE" });
+        tickets = tickets.filter(x => x.id !== id);
+        render();
+        toast(`Ticket #${id} deleted`);
+      } catch (err) {
+        toast(err.message, true);
+      }
+    }
+
+    // ---------- Modal ----------
+    function openModal() {
+      modalErrorEl.className = "modal-error";
+      modalErrorEl.textContent = "";
+      fCustomer.value = "";
+      fDevice.value = "";
+      fIssue.value = "";
+      modalEl.classList.add("open");
+      fDevice.focus();
+    }
+
+    function closeModal() {
+      modalEl.classList.remove("open");
+    }
+
+    async function saveTicket() {
+      const customerName = fCustomer.value.trim();
+      const device = fDevice.value.trim();
+      const issue = fIssue.value.trim();
+
+      if (!device || !issue) {
+        modalErrorEl.textContent = "Device and issue are required.";
+        modalErrorEl.className = "modal-error show";
+        return;
+      }
+
+      const body = { device, issue };
+      if (customerName) body.customerName = customerName;
+
+      try {
+        await apiCall(API, {
+          method: "POST",
+          body: JSON.stringify(body)
+        });
+        closeModal();
+        toast("Ticket created");
+        loadTickets();
+      } catch (err) {
+        modalErrorEl.textContent = err.message;
+        modalErrorEl.className = "modal-error show";
+      }
+    }
+
+    // ---------- Event wiring ----------
+    newBtn.addEventListener("click", openModal);
+    cancelBtn.addEventListener("click", closeModal);
+    saveBtn.addEventListener("click", saveTicket);
+
+    // Close modal on backdrop click
+    modalEl.addEventListener("click", (e) => {
+      if (e.target === modalEl) closeModal();
+    });
+
+    // Close modal on Escape
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeModal();
+    });
+
+    // Enter in device field jumps to issue
+    fDevice.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        fIssue.focus();
+      }
+    });
+
+    // Delegated click handler for card actions
+    boardEl.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-action]");
+      if (!btn) return;
+      const id = Number(btn.dataset.id);
+      if (btn.dataset.action === "delete") deleteTicket(id);
+    });
+
+    // Delegated change handler for status dropdown
+    boardEl.addEventListener("change", (e) => {
+      const sel = e.target.closest("[data-action='status']");
+      if (!sel) return;
+      const id = Number(sel.dataset.id);
+      changeStatus(id, sel.value);
+    });
+
+    // ---------- Boot ----------
+    loadTickets();
+  </script>
+</body>
+</html>
