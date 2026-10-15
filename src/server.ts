@@ -13,8 +13,10 @@ import {
 } from "./routes/repairs";
 import { handleNotFound } from "./routes/notfound";
 
-const PORT = 3000;
+
 const PUBLIC_DIR = path.join(__dirname, "..", "public");
+const PORT = Number(process.env.PORT) || 3000;
+const HOST = process.env.NODE_ENV === "production" ? "0.0.0.0" : "127.0.0.1";
 
 function serveStatic(res: ServerResponse, filePath: string, contentType: string): void {
   fs.readFile(filePath, (err, data) => {
@@ -63,7 +65,7 @@ const server = http.createServer((req: IncomingMessage, res: ServerResponse) => 
   return handleNotFound(req, res);
 });
 
-server.listen(PORT, "127.0.0.1", () => {
-  console.log(`RepairDesk API: http://127.0.0.1:${PORT}`);
-  console.log(`Frontend:       http://127.0.0.1:${PORT}/`);
+server.listen(PORT, HOST, () => {
+  console.log(`RepairDesk API: http://${HOST}:${PORT}`);
+  console.log(`Frontend:       http://${HOST}:${PORT}/`);
 });
