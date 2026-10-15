@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Health — RepairDesk Lite</title>
+  <style>
+    :root {
+      --blue-900: #0f2c4d;
+      --blue-700: #1a4d80;
+      --blue-500: #2e7dd1;
+      --blue-100: #e6f0fa;
+      --blue-50:  #f5f9fd;
+      --gray-900: #1a202c;
+      --gray-600: #4a5568;
+      --gray-300: #cbd5e0;
+      --gray-100: #edf2f7;
+      --white:    #ffffff;
+      --green:    #2f855a;
+      --green-bg: #e6f5ec;
+      --red:      #c53030;
+      --red-bg:   #fff5f5;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(135deg, var(--blue-50) 0%, var(--blue-100) 100%);
+      color: var(--gray-900);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    .wrap {
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    .card {
+      background: var(--white);
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(15, 44, 77, 0.15);
+      overflow: hidden;
+    }
+    .head {
+      background: var(--blue-900);
+      color: var(--white);
+      padding: 28px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+    .head h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+    .head p {
+      margin: 4px 0 0;
+      font-size: 12px;
+      color: var(--blue-100);
+      opacity: 0.85;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .status-badge.ok {
+      background: var(--green-bg);
+      color: var(--green);
+    }
+    .status-badge.error {
+      background: var(--red-bg);
+      color: var(--red);
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 0 4px color-mix(in srgb, currentColor 20%, transparent);
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%      { opacity: 0.4; }
+    }
+    .body { padding: 28px 32px; }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--gray-100);
+      font-size: 14px;
+    }
+    .row:last-child { border-bottom: none; }
+    .label {
+      color: var(--gray-600);
+      font-weight: 600;
+    }
+    .value {
+      color: var(--gray-900);
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 13px;
+    }
+    .value.ok  { color: var(--green); font-weight: 700; }
+    .value.err { color: var(--red); font-weight: 700; }
+    .footer {
+      padding: 16px 32px 24px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--gray-600);
+    }
+    .footer a {
+      color: var(--blue-700);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="head">
+        <div>
+          <h1>RepairDesk Lite</h1>
+          <p>System health check</p>
+        </div>
+        <div id="status-badge" class="status-badge ok">
+          <span class="dot"></span>
+          <span id="status-text">Loading</span>
+        </div>
+      </div>
+
+      <div class="body" id="body">
+        <div class="row">
+          <span class="label">Status</span>
+          <span class="value" id="r-message">—</span>
+        </div>
+      </div>
+
+      <div class="footer">
+        <a href="/">← Back to the board</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function load() {
+      const badge = document.getElementById("status-badge");
+      const statusText = document.getElementById("status-text");
+      const body = document.getElementById("body");
+
+      try {
+        const res = await fetch("/health", {
+          headers: { "Accept": "application/json" }
+        });
+        const data = await res.json();
+
+        const ok = data.success === true;
+
+        badge.className = "status-badge " + (ok ? "ok" : "error");
+        statusText.textContent = ok ? "Healthy" : "Degraded";
+
+        const uptime = data.uptime != null ? formatUptime(data.uptime) : "—";
+        const dbStatus = data.checks?.database || "—";
+        const sessions = data.checks?.activeSessions ?? "—";
+
+        body.innerHTML = `
+          <div class="row">
+            <span class="label">Message</span>
+            <span class="value">${escapeHtml(data.message || "—")}</span>
+          </div>
+          <div class="row">
+            <span class="label">Environment</span>
+            <span class="value">${escapeHtml(data.env || "—")}</span>
+          </div>
+          <div class="row">
+            <span class="label">Uptime</span>
+            <span class="value">${escapeHtml(uptime)}</span>
+          </div>
+          <div class="row">
+            <span class="label">Database</span>
+            <span class="value ${dbStatus === "ok" ? "ok" : "err"}">${escapeHtml(dbStatus)}</span>
+          </div>
+          <div class="row">
+            <span class="label">Active sessions</span>
+            <span class="value">${escapeHtml(String(sessions))}</span>
+          </div>
+          <div class="row">
+            <span class="label">Last checked</span>
+            <span class="value">${escapeHtml(data.timestamp || "—")}</span>
+          </div>
+        `;
+      } catch (err) {
+        badge.className = "status-badge error";
+        statusText.textContent = "Unreachable";
+        body.innerHTML = `
+          <div class="row">
+            <span class="label">Error</span>
+            <span class="value err">${escapeHtml(err.message || "Unknown error")}</span>
+          </div>
+        `;
+      }
+    }
+
+    function formatUptime(seconds) {
+      const s = Number(seconds);
+      if (!Number.isFinite(s)) return "—";
+      const days = Math.floor(s / 86400);
+      const hours = Math.floor((s % 86400) / 3600);
+      const mins = Math.floor((s % 3600) / 60);
+      const secs = s % 60;
+      const parts = [];
+      if (days)  parts.push(days + "d");
+      if (hours) parts.push(hours + "h");
+      if (mins)  parts.push(mins + "m");
+      parts.push(secs + "s");
+      return parts.join(" ");
+    }
+
+    function escapeHtml(str) {
+      if (str == null) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    load();
+    setInterval(load, 10000); // refresh every 10s
+  </script>
+</body>
+</html>

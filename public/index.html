@@ -649,6 +649,53 @@
     const fLabour   = document.getElementById("f-labour");
     const fParts    = document.getElementById("f-parts");
 
+    let currentUser = null;
+
+    function updateUserBar() {
+      if (!currentUser) return;
+      const header = document.querySelector("header");
+      if (!header) return;
+      if (document.getElementById("user-bar")) return;
+
+      const bar = document.createElement("div");
+      bar.id = "user-bar";
+      bar.style.cssText = `
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid rgba(255,255,255,0.15);
+        font-size: 13px;
+        color: var(--blue-100);
+      `;
+      bar.innerHTML = `
+        <span>
+          Signed in as <strong>${escapeHtml(currentUser.username)}</strong>
+          ${currentUser.shopName ? " &middot; " + escapeHtml(currentUser.shopName) : ""}
+        </span>
+        <button id="logout-btn" style="
+          background: transparent;
+          color: var(--blue-100);
+          border: 1px solid rgba(255,255,255,0.3);
+          padding: 6px 12px;
+          font-size: 12px;
+          border-radius: 4px;
+          cursor: pointer;
+          font-family: inherit;
+          font-weight: 600;
+        ">Log out</button>
+      `;
+      header.appendChild(bar);
+
+      document.getElementById("logout-btn").addEventListener("click", async () => {
+        try {
+          await fetch("/api/auth/logout", { method: "POST" });
+        } catch {}
+        window.location.href = "/login.html";
+      });
+    }
+
     function escapeHtml(str) {
       if (str == null) return "";
       return String(str)
@@ -790,12 +837,17 @@
       `;
     }
 
-    async function loadTickets() {
+        async function loadTickets() {
       try {
         const res = await apiCall(API);
         tickets = res.data || [];
         render();
       } catch (err) {
+        const msg = String(err.message || "");
+        if (msg.toLowerCase().includes("auth") || msg.includes("401")) {
+          window.location.href = "/login.html";
+          return;
+        }
         boardEl.innerHTML = `<div class="loading">Failed to load tickets: ${escapeHtml(err.message)}</div>`;
       }
     }
@@ -1051,7 +1103,22 @@
       if (e.target === receiptBackdrop) closeReceipt();
     });
 
-    loadTickets();
+        // Check auth on load. If authenticated, load tickets.
+    (async () => {
+      try {
+        const res = await fetch("/api/auth/me");
+        if (!res.ok) {
+          window.location.href = "/login.html";
+          return;
+        }
+        const data = await res.json();
+        currentUser = data.data;
+        updateUserBar();
+        loadTickets();
+      } catch {
+        window.location.href = "/login.html";
+      }
+    })();
   </script>
 </body>
 </html>

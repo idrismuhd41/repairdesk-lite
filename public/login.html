@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign in — RepairDesk Lite</title>
+  <style>
+    :root {
+      --blue-900: #0f2c4d;
+      --blue-700: #1a4d80;
+      --blue-500: #2e7dd1;
+      --blue-100: #e6f0fa;
+      --blue-50:  #f5f9fd;
+      --gray-900: #1a202c;
+      --gray-600: #4a5568;
+      --gray-300: #cbd5e0;
+      --gray-100: #edf2f7;
+      --white:    #ffffff;
+      --red:      #c53030;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(135deg, var(--blue-50) 0%, var(--blue-100) 100%);
+      color: var(--gray-900);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .auth-card {
+      background: var(--white);
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(15, 44, 77, 0.15);
+      width: 100%;
+      max-width: 420px;
+      overflow: hidden;
+    }
+    .auth-header {
+      background: var(--blue-900);
+      color: var(--white);
+      padding: 24px 28px;
+      text-align: center;
+    }
+    .auth-header h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+    .auth-header p {
+      margin: 4px 0 0;
+      font-size: 12px;
+      color: var(--blue-100);
+      opacity: 0.85;
+    }
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .tab {
+      flex: 1;
+      padding: 14px 20px;
+      background: transparent;
+      border: none;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gray-600);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s ease;
+    }
+    .tab:hover {
+      background: var(--blue-50);
+    }
+    .tab.active {
+      color: var(--blue-700);
+      border-bottom-color: var(--blue-500);
+      background: var(--blue-50);
+    }
+    .form-body { padding: 24px 28px; }
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--gray-600);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+      margin-top: 14px;
+    }
+    label:first-child { margin-top: 0; }
+    input {
+      width: 100%;
+      font-family: inherit;
+      font-size: 15px;
+      padding: 11px 14px;
+      border: 1px solid var(--gray-300);
+      border-radius: 6px;
+      background: var(--white);
+      color: var(--gray-900);
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    input:focus {
+      outline: none;
+      border-color: var(--blue-500);
+      box-shadow: 0 0 0 3px rgba(46, 125, 209, 0.15);
+    }
+    .hint {
+      font-size: 12px;
+      color: var(--gray-600);
+      margin-top: 4px;
+      font-style: italic;
+    }
+    .submit-btn {
+      width: 100%;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      border: none;
+      border-radius: 6px;
+      padding: 13px 20px;
+      margin-top: 24px;
+      background: var(--blue-500);
+      color: var(--white);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .submit-btn:hover:not(:disabled) {
+      background: var(--blue-700);
+    }
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .error {
+      background: #fff5f5;
+      color: var(--red);
+      font-size: 13px;
+      padding: 10px 12px;
+      border-radius: 6px;
+      margin-top: 16px;
+      display: none;
+    }
+    .error.show { display: block; }
+    .success {
+      background: #f0fff4;
+      color: #2f855a;
+      font-size: 13px;
+      padding: 10px 12px;
+      border-radius: 6px;
+      margin-top: 16px;
+      display: none;
+    }
+    .success.show { display: block; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="auth-card">
+    <div class="auth-header">
+      <h1>RepairDesk Lite</h1>
+      <p>By Idris M T &middot; First Class Technologies</p>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" id="tab-login">Log in</button>
+      <button class="tab" id="tab-signup">Sign up</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <form class="form-body" id="form-login" autocomplete="on">
+      <label for="login-username">Username</label>
+      <input type="text" id="login-username" name="username" autocomplete="username" required />
+
+      <label for="login-password">Password</label>
+      <input type="password" id="login-password" name="password" autocomplete="current-password" required />
+
+      <div class="error" id="login-error"></div>
+
+      <button type="submit" class="submit-btn" id="login-submit">Log in</button>
+    </form>
+
+    <!-- SIGNUP FORM -->
+    <form class="form-body hidden" id="form-signup" autocomplete="on">
+      <label for="signup-username">Username</label>
+      <input type="text" id="signup-username" name="username" autocomplete="username" required />
+      <div class="hint">3-30 characters. Letters, numbers, . _ -</div>
+
+      <label for="signup-shopname">Shop name <span style="font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></label>
+      <input type="text" id="signup-shopname" name="shopName" />
+
+      <label for="signup-password">Password</label>
+      <input type="password" id="signup-password" name="new-password" autocomplete="new-password" required />
+      <div class="hint">Minimum 8 characters</div>
+
+      <label for="signup-invite">Invite code</label>
+      <input type="text" id="signup-invite" name="inviteCode" required />
+      <div class="hint">Ask the shop administrator for a code</div>
+
+      <div class="error" id="signup-error"></div>
+      <div class="success" id="signup-success"></div>
+
+      <button type="submit" class="submit-btn" id="signup-submit">Create account</button>
+    </form>
+  </div>
+
+  <script>
+    const API = "/api/auth";
+
+    const tabLogin = document.getElementById("tab-login");
+    const tabSignup = document.getElementById("tab-signup");
+    const formLogin = document.getElementById("form-login");
+    const formSignup = document.getElementById("form-signup");
+
+    const loginError = document.getElementById("login-error");
+    const signupError = document.getElementById("signup-error");
+    const signupSuccess = document.getElementById("signup-success");
+
+    const loginSubmit = document.getElementById("login-submit");
+    const signupSubmit = document.getElementById("signup-submit");
+
+    function showTab(which) {
+      if (which === "login") {
+        tabLogin.classList.add("active");
+        tabSignup.classList.remove("active");
+        formLogin.classList.remove("hidden");
+        formSignup.classList.add("hidden");
+      } else {
+        tabSignup.classList.add("active");
+        tabLogin.classList.remove("active");
+        formSignup.classList.remove("hidden");
+        formLogin.classList.add("hidden");
+      }
+      loginError.classList.remove("show");
+      signupError.classList.remove("show");
+      signupSuccess.classList.remove("show");
+    }
+
+    tabLogin.addEventListener("click", () => showTab("login"));
+    tabSignup.addEventListener("click", () => showTab("signup"));
+
+    async function postJson(url, body) {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json().catch(() => ({}));
+      return { ok: res.ok, status: res.status, data };
+    }
+
+    // ---- Login ----
+    formLogin.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      loginError.classList.remove("show");
+      loginSubmit.disabled = true;
+      loginSubmit.textContent = "Logging in…";
+
+      const username = document.getElementById("login-username").value.trim();
+      const password = document.getElementById("login-password").value;
+
+      try {
+        const { ok, data } = await postJson(`${API}/login`, { username, password });
+        if (!ok) {
+          loginError.textContent = data.message || "Login failed";
+          loginError.classList.add("show");
+          loginSubmit.disabled = false;
+          loginSubmit.textContent = "Log in";
+          return;
+        }
+        window.location.href = "/";
+      } catch {
+        loginError.textContent = "Could not reach the server. Please try again.";
+        loginError.classList.add("show");
+        loginSubmit.disabled = false;
+        loginSubmit.textContent = "Log in";
+      }
+    });
+
+    // ---- Signup ----
+    formSignup.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      signupError.classList.remove("show");
+      signupSuccess.classList.remove("show");
+      signupSubmit.disabled = true;
+      signupSubmit.textContent = "Creating account…";
+
+      const username = document.getElementById("signup-username").value.trim();
+      const password = document.getElementById("signup-password").value;
+      const shopName = document.getElementById("signup-shopname").value.trim();
+      const inviteCode = document.getElementById("signup-invite").value.trim();
+
+      try {
+        const { ok, data } = await postJson(`${API}/signup`, {
+          username, password, shopName, inviteCode
+        });
+
+        if (!ok) {
+          signupError.textContent = data.message || "Signup failed";
+          signupError.classList.add("show");
+          signupSubmit.disabled = false;
+          signupSubmit.textContent = "Create account";
+          return;
+        }
+
+        signupSuccess.textContent = "Account created! Redirecting…";
+        signupSuccess.classList.add("show");
+        setTimeout(() => { window.location.href = "/"; }, 600);
+      } catch {
+        signupError.textContent = "Could not reach the server. Please try again.";
+        signupError.classList.add("show");
+        signupSubmit.disabled = false;
+        signupSubmit.textContent = "Create account";
+      }
+    });
+
+    // If already logged in, skip to the app
+    fetch(`${API}/me`).then((r) => {
+      if (r.ok) window.location.href = "/";
+    });
+  </script>
+</body>
+</html>

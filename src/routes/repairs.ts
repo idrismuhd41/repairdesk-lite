@@ -2,9 +2,11 @@ import type { IncomingMessage, ServerResponse } from "node:http";
 import db from "../db";
 import { sendJson, readJsonBody } from "../utils/http";
 import type { JsonPayload } from "../utils/http";
+import { requireAuth } from "../auth/middleware";
 
 type Repair = {
   id: number;
+  userId: number;
   customerName: string | null;
   customerPhone: string | null;
   customerAddress: string | null;
@@ -27,6 +29,7 @@ const ALLOWED_STATUSES = [
 
 const SELECT_COLUMNS = `
   id,
+  user_id          AS userId,
   customer_name    AS customerName,
   customer_phone   AS customerPhone,
   customer_address AS customerAddress,
@@ -40,12 +43,12 @@ const SELECT_COLUMNS = `
   updated_at       AS updatedAt
 `;
 
-function findRepairById(id: number): Repair | undefined {
+function findRepairByIdForUser(id: number, userId: number): Repair | undefined {
   return db.prepare(`
     SELECT ${SELECT_COLUMNS}
     FROM repairs
-    WHERE id = ?
-  `).get(id) as Repair | undefined;
+    WHERE id = ? AND user_id = ?
+  `).get(id, userId) as Repair | undefined;
 }
 
 // ---------- helpers ----------
@@ -68,12 +71,16 @@ function optionalNumber(value: unknown): number | null | undefined {
 
 // ---------- handlers ----------
 
-function listRepairs(_req: IncomingMessage, res: ServerResponse): void {
+function listRepairs(req: IncomingMessage, res: ServerResponse): void {
+  const session = requireAuth(req, res);
+  if (!session) return;
+
   const repairs = db.prepare(`
     SELECT ${SELECT_COLUMNS}
     FROM repairs
+    WHERE user_id = ?
     ORDER BY id ASC
-  `).all() as Repair[];
+  `).all(session.userId) as Repair[];
 
   sendJson(res, 200, {
     success: true,
@@ -83,6 +90,9 @@ function listRepairs(_req: IncomingMessage, res: ServerResponse): void {
 }
 
 function createRepair(req: IncomingMessage, res: ServerResponse): void {
+  const session = requireAuth(req, res);
+  if (!session) return;
+
   readJsonBody(req, res, (input: JsonPayload) => {
     const {
       device,
@@ -93,18 +103,8 @@ function createRepair(req: IncomingMessage, res: ServerResponse): void {
       notes,
       costLabour,
       costParts
-    } = input as {
-      device?: unknown;
-      issue?: unknown;
-      customerName?: unknown;
-      customerPhone?: unknown;
-      customerAddress?: unknown;
-      notes?: unknown;
-      costLabour?: unknown;
-      costParts?: unknown;
-    };
+    } = input as Record<string, unknown>;
 
-    // Required fields
     if (
       typeof device !== "string" || !device.trim() ||
       typeof issue !== "string" || !issue.trim()
@@ -115,7 +115,6 @@ function createRepair(req: IncomingMessage, res: ServerResponse): void {
       });
     }
 
-    // Optional fields — validate if provided
     const cName = optionalString(customerName);
     const cPhone = optionalString(customerPhone);
     const cAddress = optionalString(customerAddress);
@@ -162,6 +161,7 @@ function createRepair(req: IncomingMessage, res: ServerResponse): void {
 
     const result = db.prepare(`
       INSERT INTO repairs (
+        user_id,
         customer_name,
         customer_phone,
         customer_address,
@@ -171,8 +171,9 @@ function createRepair(req: IncomingMessage, res: ServerResponse): void {
         cost_labour,
         cost_parts
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
+      session.userId,
       cName ?? null,
       cPhone ?? null,
       cAddress ?? null,
@@ -183,7 +184,10 @@ function createRepair(req: IncomingMessage, res: ServerResponse): void {
       cParts ?? null
     );
 
-    const newRepair = findRepairById(Number(result.lastInsertRowid));
+    const newRepair = findRepairByIdForUser(
+      Number(result.lastInsertRowid),
+      session.userId
+    );
 
     sendJson(res, 201, {
       success: true,
@@ -193,8 +197,11 @@ function createRepair(req: IncomingMessage, res: ServerResponse): void {
   });
 }
 
-function getRepair(_req: IncomingMessage, res: ServerResponse, id: number): void {
-  const repair = findRepairById(id);
+function getRepair(req: IncomingMessage, res: ServerResponse, id: number): void {
+  const session = requireAuth(req, res);
+  if (!session) return;
+
+  const repair = findRepairByIdForUser(id, session.userId);
 
   if (!repair) {
     return sendJson(res, 404, {
@@ -210,8 +217,11 @@ function getRepair(_req: IncomingMessage, res: ServerResponse, id: number): void
 }
 
 function updateRepair(req: IncomingMessage, res: ServerResponse, id: number): void {
+  const session = requireAuth(req, res);
+  if (!session) return;
+
   readJsonBody(req, res, (input: JsonPayload) => {
-    const existing = findRepairById(id);
+    const existing = findRepairByIdForUser(id, session.userId);
     if (!existing) {
       return sendJson(res, 404, {
         success: false,
@@ -231,7 +241,6 @@ function updateRepair(req: IncomingMessage, res: ServerResponse, id: number): vo
       costParts
     } = input as Record<string, unknown>;
 
-    // Status has a whitelist
     if (status !== undefined) {
       if (
         typeof status !== "string" ||
@@ -244,7 +253,6 @@ function updateRepair(req: IncomingMessage, res: ServerResponse, id: number): vo
       }
     }
 
-    // Device and issue must remain non-empty if being changed
     if (device !== undefined) {
       if (typeof device !== "string" || !device.trim()) {
         return sendJson(res, 400, {
@@ -291,7 +299,7 @@ function updateRepair(req: IncomingMessage, res: ServerResponse, id: number): vo
         cost_labour      = ?,
         cost_parts       = ?,
         updated_at       = datetime('now')
-      WHERE id = ?
+      WHERE id = ? AND user_id = ?
     `).run(
       newCustomerName,
       newCustomerPhone,
@@ -302,10 +310,11 @@ function updateRepair(req: IncomingMessage, res: ServerResponse, id: number): vo
       newStatus,
       newLabour,
       newParts,
-      id
+      id,
+      session.userId
     );
 
-    const updated = findRepairById(id);
+    const updated = findRepairByIdForUser(id, session.userId);
 
     sendJson(res, 200, {
       success: true,
@@ -315,10 +324,13 @@ function updateRepair(req: IncomingMessage, res: ServerResponse, id: number): vo
   });
 }
 
-function deleteRepair(_req: IncomingMessage, res: ServerResponse, id: number): void {
+function deleteRepair(req: IncomingMessage, res: ServerResponse, id: number): void {
+  const session = requireAuth(req, res);
+  if (!session) return;
+
   const result = db.prepare(`
-    DELETE FROM repairs WHERE id = ?
-  `).run(id);
+    DELETE FROM repairs WHERE id = ? AND user_id = ?
+  `).run(id, session.userId);
 
   if (result.changes === 0) {
     return sendJson(res, 404, {
