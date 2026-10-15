@@ -3,6 +3,8 @@ services:
     name: repairdesk-lite
     env: node
     plan: free
+    region: frankfurt
+    rootDir: .
     buildCommand: npm install --ignore-scripts && npm run build
     startCommand: npm start
     envVars:
