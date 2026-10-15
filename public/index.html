@@ -91,13 +91,34 @@
       font-size: 12px;
     }
     .btn-danger:hover { background: var(--red); color: var(--white); }
-    .board {
+   .board {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(var(--board-cols, 3), 1fr);
       gap: 20px;
       padding: 0 32px 40px;
     }
-    @media (max-width: 900px) { .board { grid-template-columns: 1fr; } }
+    .board[data-cols="1"] { --board-cols: 1; }
+    .board[data-cols="2"] { --board-cols: 2; }
+    .board[data-cols="3"] { --board-cols: 3; }
+
+    @media (max-width: 900px) {
+      .board {
+        grid-template-columns: 1fr;   /* always 1 column on mobile */
+        gap: 16px;
+        padding: 0 16px 40px;
+      }
+      .column {
+        min-height: auto;
+      }
+    }
+    @media (max-width: 480px) {
+      .board {
+        padding: 0 12px 32px;
+      }
+      .column {
+        padding: 12px;
+      }
+    }
     .column {
       background: var(--white);
       border-radius: 10px;
@@ -170,7 +191,25 @@
       margin-bottom: 8px;
     }
     .card .cost strong { color: var(--green); font-size: 13px; }
-    .card .actions { display: flex; gap: 6px; flex-wrap: wrap; }
+    .card .actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.card .actions select {
+  flex: 1 1 100%;
+}
+.card .actions button {
+  flex: 0 1 auto;
+}
+@media (max-width: 480px) {
+  .card .actions button {
+    flex: 1 1 auto;
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+}
     .card .actions select {
       font-family: inherit;
       font-size: 12px;
@@ -682,11 +721,14 @@
       }
 
       // If a status filter is active, hide other columns
+            // If a status filter is active, hide other columns
       const activeColumns = statusFilter
         ? COLUMNS.filter(c => c.status === statusFilter)
         : COLUMNS;
 
-      boardEl.style.gridTemplateColumns = `repeat(${activeColumns.length || 1}, 1fr)`;
+      // Tell CSS how many columns are actually rendered (1, 2, or 3).
+      // The stylesheet uses this to decide desktop vs mobile layouts.
+      boardEl.dataset.cols = String(activeColumns.length || 1);
 
       boardEl.innerHTML = activeColumns.map(col => {
         const items = grouped[col.status] || [];
