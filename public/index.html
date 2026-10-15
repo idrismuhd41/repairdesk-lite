@@ -47,7 +47,7 @@
     .toolbar .stats { font-size: 14px; color: var(--gray-600); }
     .toolbar .stats strong { color: var(--blue-700); }
     .toolbar-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-    .search-box {
+    .search-box, .filter-select {
       font-family: inherit;
       font-size: 14px;
       padding: 9px 14px;
@@ -55,9 +55,10 @@
       border-radius: 6px;
       background: var(--white);
       color: var(--gray-900);
-      min-width: 240px;
     }
-    .search-box:focus {
+    .search-box { min-width: 240px; }
+    .filter-select { min-width: 150px; }
+    .search-box:focus, .filter-select:focus {
       outline: none;
       border-color: var(--blue-500);
       box-shadow: 0 0 0 3px rgba(46, 125, 209, 0.15);
@@ -274,6 +275,193 @@
     }
     .toast.show { opacity: 1; transform: translateY(0); }
     .toast.error { background: var(--red); }
+
+    /* ---------- Receipt styles ---------- */
+    .receipt-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 44, 77, 0.6);
+      z-index: 300;
+      padding: 24px;
+      overflow-y: auto;
+    }
+    .receipt-backdrop.open { display: block; }
+    .receipt-container {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .receipt-toolbar {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .receipt-toolbar .btn-primary {
+      background: var(--white);
+      color: var(--blue-700);
+    }
+    .receipt-toolbar .btn-primary:hover {
+      background: var(--blue-100);
+    }
+    .receipt-toolbar .btn-ghost {
+      background: var(--white);
+      color: var(--gray-600);
+    }
+    .receipt-paper {
+      background: var(--white);
+      padding: 48px;
+      border-radius: 6px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+      color: var(--gray-900);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .receipt-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding-bottom: 20px;
+      border-bottom: 2px solid var(--blue-900);
+      margin-bottom: 24px;
+    }
+    .receipt-header .shop-name {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--blue-900);
+      letter-spacing: 0.3px;
+    }
+    .receipt-header .shop-sub {
+      font-size: 12px;
+      color: var(--gray-600);
+      margin-top: 2px;
+    }
+    .receipt-header .doc-title {
+      text-align: right;
+    }
+    .receipt-header .doc-title .label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--gray-600);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .receipt-header .doc-title .num {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--blue-900);
+    }
+    .receipt-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+    .receipt-meta h4 {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--gray-600);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 0 0 8px;
+    }
+    .receipt-meta p {
+      margin: 0 0 4px;
+      font-size: 14px;
+    }
+    .receipt-meta .muted {
+      color: var(--gray-600);
+      font-size: 13px;
+    }
+    .receipt-section {
+      margin-bottom: 24px;
+    }
+    .receipt-section h4 {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--gray-600);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 0 0 8px;
+      border-bottom: 1px solid var(--gray-100);
+      padding-bottom: 6px;
+    }
+    .receipt-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    .receipt-table th, .receipt-table td {
+      text-align: left;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .receipt-table th {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--gray-600);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+    .receipt-table td.amount {
+      text-align: right;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .receipt-table tr.total td {
+      border-top: 2px solid var(--blue-900);
+      border-bottom: none;
+      font-weight: 800;
+      font-size: 18px;
+      color: var(--blue-900);
+      padding-top: 14px;
+    }
+    .receipt-status {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .receipt-status.received    { background: #e6f0fa; color: var(--blue-700); }
+    .receipt-status.in_progress { background: #fef5e7; color: var(--amber); }
+    .receipt-status.completed   { background: #e6f5ec; color: var(--green); }
+    .receipt-status.cancelled   { background: #fee; color: var(--red); }
+    .receipt-footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid var(--gray-100);
+      text-align: center;
+      font-size: 12px;
+      color: var(--gray-600);
+    }
+    .receipt-footer .thanks {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--blue-900);
+      margin-bottom: 4px;
+    }
+
+    /* Print rules: only show the receipt when printing */
+    @media print {
+      body * { visibility: hidden; }
+      #receipt-backdrop, #receipt-backdrop * { visibility: visible; }
+      #receipt-backdrop {
+        position: absolute;
+        left: 0;
+        top: 0;
+        background: white;
+        padding: 0;
+      }
+      .receipt-toolbar { display: none; }
+      .receipt-paper {
+        box-shadow: none;
+        padding: 20px;
+        border-radius: 0;
+      }
+    }
   </style>
 </head>
 <body>
@@ -291,6 +479,13 @@
         id="search"
         placeholder="Search by customer, device, or #ID&hellip;"
       />
+      <select class="filter-select" id="filter-status">
+        <option value="">All statuses</option>
+        <option value="received">Received only</option>
+        <option value="in_progress">In Progress only</option>
+        <option value="completed">Completed only</option>
+        <option value="cancelled">Cancelled only</option>
+      </select>
       <button class="btn-primary" id="new-ticket-btn">+ New Repair Ticket</button>
     </div>
   </div>
@@ -354,6 +549,17 @@
     </div>
   </div>
 
+  <!-- Receipt overlay -->
+  <div class="receipt-backdrop" id="receipt-backdrop">
+    <div class="receipt-container">
+      <div class="receipt-toolbar">
+        <button class="btn-ghost" id="receipt-close">Close</button>
+        <button class="btn-primary" id="receipt-print">Print Receipt</button>
+      </div>
+      <div class="receipt-paper" id="receipt-paper"></div>
+    </div>
+  </div>
+
   <div class="toast" id="toast"></div>
 
   <script>
@@ -374,19 +580,26 @@
 
     let tickets = [];
     let searchTerm = "";
+    let statusFilter = "";
     let editingId = null;
+    let receiptTicket = null;
 
-    const boardEl      = document.getElementById("board");
-    const statsEl      = document.getElementById("stats");
-    const modalEl      = document.getElementById("modal");
-    const modalTitleEl = document.getElementById("modal-title");
-    const modalSubEl   = document.getElementById("modal-sub");
-    const modalErrorEl = document.getElementById("modal-error");
-    const toastEl      = document.getElementById("toast");
-    const newBtn       = document.getElementById("new-ticket-btn");
-    const cancelBtn    = document.getElementById("modal-cancel");
-    const saveBtn      = document.getElementById("modal-save");
-    const searchEl     = document.getElementById("search");
+    const boardEl        = document.getElementById("board");
+    const statsEl        = document.getElementById("stats");
+    const modalEl        = document.getElementById("modal");
+    const modalTitleEl   = document.getElementById("modal-title");
+    const modalSubEl     = document.getElementById("modal-sub");
+    const modalErrorEl   = document.getElementById("modal-error");
+    const toastEl        = document.getElementById("toast");
+    const newBtn         = document.getElementById("new-ticket-btn");
+    const cancelBtn      = document.getElementById("modal-cancel");
+    const saveBtn        = document.getElementById("modal-save");
+    const searchEl       = document.getElementById("search");
+    const filterEl       = document.getElementById("filter-status");
+    const receiptBackdrop= document.getElementById("receipt-backdrop");
+    const receiptPaper   = document.getElementById("receipt-paper");
+    const receiptClose   = document.getElementById("receipt-close");
+    const receiptPrint   = document.getElementById("receipt-print");
 
     const fCustomer = document.getElementById("f-customer");
     const fPhone    = document.getElementById("f-phone");
@@ -410,6 +623,17 @@
     function formatMoney(n) {
       if (n == null || isNaN(n)) return "\u20A60";
       return "\u20A6" + Number(n).toLocaleString("en-NG", { maximumFractionDigits: 0 });
+    }
+
+    function formatDate(s) {
+      if (!s) return "\u2014";
+      try {
+        const d = new Date(s.replace(" ", "T") + "Z");
+        return d.toLocaleString("en-NG", {
+          year: "numeric", month: "short", day: "numeric",
+          hour: "2-digit", minute: "2-digit"
+        });
+      } catch { return s; }
     }
 
     function toast(message, isError = false) {
@@ -441,13 +665,30 @@
       );
     }
 
+    function matchesStatus(t) {
+      if (!statusFilter) return true;
+      return t.status === statusFilter;
+    }
+
+    function visibleTickets() {
+      return tickets.filter(t => matchesSearch(t) && matchesStatus(t));
+    }
+
     function render() {
+      const visible = visibleTickets();
       const grouped = { received: [], in_progress: [], completed: [] };
-      for (const t of tickets) {
-        if (matchesSearch(t) && grouped[t.status]) grouped[t.status].push(t);
+      for (const t of visible) {
+        if (grouped[t.status]) grouped[t.status].push(t);
       }
 
-      boardEl.innerHTML = COLUMNS.map(col => {
+      // If a status filter is active, hide other columns
+      const activeColumns = statusFilter
+        ? COLUMNS.filter(c => c.status === statusFilter)
+        : COLUMNS;
+
+      boardEl.style.gridTemplateColumns = `repeat(${activeColumns.length || 1}, 1fr)`;
+
+      boardEl.innerHTML = activeColumns.map(col => {
         const items = grouped[col.status] || [];
         return `
           <div class="column" data-status="${col.status}">
@@ -457,14 +698,16 @@
             </div>
             ${items.length
               ? items.map(renderCard).join("")
-              : `<div class="empty">${searchTerm ? "No matching tickets" : "No tickets"}</div>`}
+              : `<div class="empty">${(searchTerm || statusFilter) ? "No matching tickets" : "No tickets"}</div>`}
           </div>
         `;
       }).join("");
 
       const total = tickets.length;
       const done = tickets.filter(t => t.status === "completed").length;
-      statsEl.innerHTML = `<strong>${total}</strong> total &middot; <strong>${done}</strong> completed`;
+      const shown = visible.length;
+      const filterNote = (searchTerm || statusFilter) ? ` &middot; <strong>${shown}</strong> shown` : "";
+      statsEl.innerHTML = `<strong>${total}</strong> total &middot; <strong>${done}</strong> completed${filterNote}`;
     }
 
     function renderCard(t) {
@@ -498,6 +741,7 @@
           <div class="actions">
             <select data-action="status" data-id="${t.id}">${options}</select>
             <button class="btn-ghost" data-action="edit" data-id="${t.id}">Edit</button>
+            <button class="btn-ghost" data-action="receipt" data-id="${t.id}">Receipt</button>
             <button class="btn-danger" data-action="delete" data-id="${t.id}">Delete</button>
           </div>
         </div>
@@ -632,11 +876,102 @@
       }
     }
 
+    // ---------- Receipt ----------
+
+    function openReceipt(id) {
+      const t = tickets.find(x => x.id === id);
+      if (!t) return;
+      receiptTicket = t;
+      receiptPaper.innerHTML = renderReceipt(t);
+      receiptBackdrop.classList.add("open");
+    }
+
+    function closeReceipt() {
+      receiptBackdrop.classList.remove("open");
+      receiptTicket = null;
+    }
+
+    function renderReceipt(t) {
+      const labour = Number(t.costLabour || 0);
+      const parts = Number(t.costParts || 0);
+      const total = labour + parts;
+      const hasCosts = labour > 0 || parts > 0;
+
+      const rows = [];
+      if (labour > 0) {
+        rows.push(`<tr><td>Labour</td><td class="amount">${formatMoney(labour)}</td></tr>`);
+      }
+      if (parts > 0) {
+        rows.push(`<tr><td>Parts</td><td class="amount">${formatMoney(parts)}</td></tr>`);
+      }
+      if (!rows.length) {
+        rows.push(`<tr><td colspan="2" class="muted">No costs recorded yet.</td></tr>`);
+      }
+
+      return `
+        <div class="receipt-header">
+          <div>
+            <div class="shop-name">RepairDesk Lite</div>
+            <div class="shop-sub">First Class Technologies</div>
+            <div class="shop-sub">Computer Repair &amp; IT Services</div>
+          </div>
+          <div class="doc-title">
+            <div class="label">Ticket No.</div>
+            <div class="num">#${t.id}</div>
+          </div>
+        </div>
+
+        <div class="receipt-meta">
+          <div>
+            <h4>Customer</h4>
+            <p><strong>${escapeHtml(t.customerName || "Unknown customer")}</strong></p>
+            ${t.customerPhone ? `<p class="muted">${escapeHtml(t.customerPhone)}</p>` : ""}
+            ${t.customerAddress ? `<p class="muted">${escapeHtml(t.customerAddress)}</p>` : ""}
+          </div>
+          <div>
+            <h4>Ticket Details</h4>
+            <p>Received: <span class="muted">${formatDate(t.createdAt)}</span></p>
+            <p>Updated: <span class="muted">${formatDate(t.updatedAt)}</span></p>
+            <p>Status: <span class="receipt-status ${t.status}">${STATUS_LABELS[t.status] || t.status}</span></p>
+          </div>
+        </div>
+
+        <div class="receipt-section">
+          <h4>Device &amp; Issue</h4>
+          <p><strong>${escapeHtml(t.device)}</strong></p>
+          <p class="muted">${escapeHtml(t.issue)}</p>
+        </div>
+
+        ${hasCosts ? `
+          <div class="receipt-section">
+            <h4>Charges</h4>
+            <table class="receipt-table">
+              <thead>
+                <tr><th>Description</th><th style="text-align:right;">Amount</th></tr>
+              </thead>
+              <tbody>
+                ${rows.join("")}
+                <tr class="total"><td>Total</td><td class="amount">${formatMoney(total)}</td></tr>
+              </tbody>
+            </table>
+          </div>
+        ` : ""}
+
+        <div class="receipt-footer">
+          <div class="thanks">Thank you for your business.</div>
+          <div>Please keep this receipt for your records.</div>
+          <div style="margin-top:6px;">RepairDesk Lite &middot; First Class Technologies</div>
+        </div>
+      `;
+    }
+
     newBtn.addEventListener("click", openCreateModal);
     cancelBtn.addEventListener("click", closeModal);
     saveBtn.addEventListener("click", saveTicket);
     modalEl.addEventListener("click", (e) => { if (e.target === modalEl) closeModal(); });
-    document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") { closeModal(); closeReceipt(); }
+    });
 
     let searchTimer;
     searchEl.addEventListener("input", (e) => {
@@ -647,18 +982,31 @@
       }, 120);
     });
 
+    filterEl.addEventListener("change", (e) => {
+      statusFilter = e.target.value;
+      render();
+    });
+
     boardEl.addEventListener("click", (e) => {
       const btn = e.target.closest("[data-action]");
       if (!btn) return;
       const id = Number(btn.dataset.id);
-      if (btn.dataset.action === "delete") deleteTicket(id);
-      if (btn.dataset.action === "edit") openEditModal(id);
+      const action = btn.dataset.action;
+      if (action === "delete") deleteTicket(id);
+      if (action === "edit") openEditModal(id);
+      if (action === "receipt") openReceipt(id);
     });
 
     boardEl.addEventListener("change", (e) => {
       const sel = e.target.closest("[data-action='status']");
       if (!sel) return;
       changeStatus(Number(sel.dataset.id), sel.value);
+    });
+
+    receiptClose.addEventListener("click", closeReceipt);
+    receiptPrint.addEventListener("click", () => window.print());
+    receiptBackdrop.addEventListener("click", (e) => {
+      if (e.target === receiptBackdrop) closeReceipt();
     });
 
     loadTickets();
