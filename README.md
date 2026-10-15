@@ -56,6 +56,3 @@ The system handles the full ticket lifecycle — from intake through completion 
 curl -X POST https://repairdesk-lite.onrender.com/api/repairs \
   -H "Content-Type: application/json" \
   -d '{"customerName":"John Doe","device":"Laptop","issue":"Battery not charging"}'
-=======
-
->>>>>>> 4066e9cdb7b46ce10c5a87342d5f14f0a5abc48c
