@@ -20,9 +20,7 @@
       --amber:    #b7791f;
       --red:      #c53030;
     }
-
     * { box-sizing: border-box; }
-
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -30,28 +28,14 @@
       color: var(--gray-900);
       min-height: 100vh;
     }
-
     header {
       background: var(--blue-900);
       color: var(--white);
       padding: 20px 32px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
-
-    header h1 {
-      margin: 0;
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: 0.3px;
-    }
-
-    header .subtitle {
-      margin: 4px 0 0;
-      font-size: 13px;
-      color: var(--blue-100);
-      opacity: 0.85;
-    }
-
+    header h1 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 0.3px; }
+    header .subtitle { margin: 4px 0 0; font-size: 13px; color: var(--blue-100); opacity: 0.85; }
     .toolbar {
       padding: 20px 32px;
       display: flex;
@@ -60,16 +44,24 @@
       gap: 16px;
       flex-wrap: wrap;
     }
-
-    .toolbar .stats {
+    .toolbar .stats { font-size: 14px; color: var(--gray-600); }
+    .toolbar .stats strong { color: var(--blue-700); }
+    .toolbar-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .search-box {
+      font-family: inherit;
       font-size: 14px;
-      color: var(--gray-600);
+      padding: 9px 14px;
+      border: 1px solid var(--gray-300);
+      border-radius: 6px;
+      background: var(--white);
+      color: var(--gray-900);
+      min-width: 240px;
     }
-
-    .toolbar .stats strong {
-      color: var(--blue-700);
+    .search-box:focus {
+      outline: none;
+      border-color: var(--blue-500);
+      box-shadow: 0 0 0 3px rgba(46, 125, 209, 0.15);
     }
-
     button {
       font-family: inherit;
       font-size: 14px;
@@ -80,16 +72,8 @@
       cursor: pointer;
       transition: all 0.15s ease;
     }
-
-    .btn-primary {
-      background: var(--blue-500);
-      color: var(--white);
-    }
-
-    .btn-primary:hover {
-      background: var(--blue-700);
-    }
-
+    .btn-primary { background: var(--blue-500); color: var(--white); }
+    .btn-primary:hover { background: var(--blue-700); }
     .btn-ghost {
       background: transparent;
       color: var(--gray-600);
@@ -97,11 +81,7 @@
       padding: 6px 10px;
       font-size: 12px;
     }
-
-    .btn-ghost:hover {
-      background: var(--gray-100);
-    }
-
+    .btn-ghost:hover { background: var(--gray-100); }
     .btn-danger {
       background: transparent;
       color: var(--red);
@@ -109,26 +89,14 @@
       padding: 6px 10px;
       font-size: 12px;
     }
-
-    .btn-danger:hover {
-      background: var(--red);
-      color: var(--white);
-    }
-
-    /* Kanban board */
+    .btn-danger:hover { background: var(--red); color: var(--white); }
     .board {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 20px;
       padding: 0 32px 40px;
     }
-
-    @media (max-width: 900px) {
-      .board {
-        grid-template-columns: 1fr;
-      }
-    }
-
+    @media (max-width: 900px) { .board { grid-template-columns: 1fr; } }
     .column {
       background: var(--white);
       border-radius: 10px;
@@ -136,7 +104,6 @@
       min-height: 400px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     }
-
     .column-header {
       display: flex;
       justify-content: space-between;
@@ -145,7 +112,6 @@
       padding-bottom: 12px;
       border-bottom: 2px solid var(--gray-100);
     }
-
     .column-header h2 {
       margin: 0;
       font-size: 14px;
@@ -154,7 +120,6 @@
       letter-spacing: 0.8px;
       color: var(--gray-600);
     }
-
     .column-header .count {
       background: var(--blue-100);
       color: var(--blue-700);
@@ -163,12 +128,9 @@
       padding: 2px 8px;
       border-radius: 10px;
     }
-
     .column[data-status="received"]    .count { background: #e6f0fa; color: var(--blue-700); }
     .column[data-status="in_progress"] .count { background: #fef5e7; color: var(--amber); }
     .column[data-status="completed"]   .count { background: #e6f5ec; color: var(--green); }
-
-    /* Ticket cards */
     .card {
       background: var(--blue-50);
       border: 1px solid var(--gray-100);
@@ -178,49 +140,36 @@
       margin-bottom: 10px;
       transition: box-shadow 0.15s ease;
     }
-
-    .card:hover {
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
-
+    .card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
     .column[data-status="received"]    .card { border-left-color: var(--blue-500); }
     .column[data-status="in_progress"] .card { border-left-color: var(--amber); }
     .column[data-status="completed"]   .card { border-left-color: var(--green); }
-
-    .card .id {
-      font-size: 11px;
+    .card .id { font-size: 11px; color: var(--gray-600); font-weight: 600; margin-bottom: 4px; }
+    .card .customer { font-size: 14px; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+    .card .contact { font-size: 12px; color: var(--gray-600); margin-bottom: 6px; }
+    .card .device { font-size: 13px; color: var(--blue-700); font-weight: 600; margin-bottom: 4px; }
+    .card .issue { font-size: 13px; color: var(--gray-600); margin-bottom: 8px; line-height: 1.4; }
+    .card .notes {
+      font-size: 12px;
       color: var(--gray-600);
-      font-weight: 600;
-      margin-bottom: 4px;
+      background: var(--white);
+      padding: 6px 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      border-left: 2px solid var(--gray-300);
     }
-
-    .card .customer {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--gray-900);
-      margin-bottom: 6px;
-    }
-
-    .card .device {
-      font-size: 13px;
-      color: var(--blue-700);
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .card .issue {
-      font-size: 13px;
-      color: var(--gray-600);
-      margin-bottom: 10px;
-      line-height: 1.4;
-    }
-
-    .card .actions {
+    .card .cost {
       display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--gray-600);
+      padding: 6px 8px;
+      background: var(--white);
+      border-radius: 4px;
+      margin-bottom: 8px;
     }
-
+    .card .cost strong { color: var(--green); font-size: 13px; }
+    .card .actions { display: flex; gap: 6px; flex-wrap: wrap; }
     .card .actions select {
       font-family: inherit;
       font-size: 12px;
@@ -229,17 +178,9 @@
       border: 1px solid var(--gray-300);
       background: var(--white);
       flex: 1;
+      min-width: 100px;
     }
-
-    .empty {
-      text-align: center;
-      color: var(--gray-300);
-      font-size: 13px;
-      padding: 24px 0;
-      font-style: italic;
-    }
-
-    /* Modal */
+    .empty { text-align: center; color: var(--gray-300); font-size: 13px; padding: 24px 0; font-style: italic; }
     .modal-backdrop {
       display: none;
       position: fixed;
@@ -249,40 +190,31 @@
       justify-content: center;
       z-index: 100;
       padding: 20px;
+      overflow-y: auto;
     }
-
-    .modal-backdrop.open {
-      display: flex;
-    }
-
+    .modal-backdrop.open { display: flex; }
     .modal {
       background: var(--white);
       border-radius: 10px;
       padding: 24px;
       width: 100%;
-      max-width: 440px;
+      max-width: 520px;
       box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      margin: auto;
     }
-
-    .modal h2 {
-      margin: 0 0 20px;
-      font-size: 18px;
-      color: var(--blue-900);
-    }
-
+    .modal h2 { margin: 0 0 4px; font-size: 18px; color: var(--blue-900); }
+    .modal .modal-sub { font-size: 12px; color: var(--gray-600); margin-bottom: 16px; }
     .modal label {
       display: block;
-      font-size: 12px;
-      font-weight: 600;
+      font-size: 11px;
+      font-weight: 700;
       color: var(--gray-600);
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin-bottom: 6px;
       margin-top: 14px;
     }
-
-    .modal input,
-    .modal textarea {
+    .modal input, .modal textarea, .modal select {
       width: 100%;
       font-family: inherit;
       font-size: 14px;
@@ -292,26 +224,27 @@
       background: var(--white);
       color: var(--gray-900);
     }
-
-    .modal input:focus,
-    .modal textarea:focus {
+    .modal input:focus, .modal textarea:focus, .modal select:focus {
       outline: none;
       border-color: var(--blue-500);
       box-shadow: 0 0 0 3px rgba(46, 125, 209, 0.15);
     }
-
-    .modal textarea {
-      resize: vertical;
-      min-height: 70px;
+    .modal textarea { resize: vertical; min-height: 60px; }
+    .modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .modal-section {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--gray-100);
     }
-
-    .modal-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 24px;
+    .modal-section h3 {
+      margin: 0 0 8px;
+      font-size: 12px;
+      color: var(--gray-600);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      font-weight: 700;
     }
-
+    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
     .modal-error {
       background: #fff5f5;
       color: var(--red);
@@ -321,18 +254,8 @@
       margin-top: 12px;
       display: none;
     }
-
-    .modal-error.show {
-      display: block;
-    }
-
-    .loading {
-      text-align: center;
-      padding: 60px 20px;
-      color: var(--gray-600);
-      font-size: 14px;
-    }
-
+    .modal-error.show { display: block; }
+    .loading { text-align: center; padding: 60px 20px; color: var(--gray-600); font-size: 14px; }
     .toast {
       position: fixed;
       bottom: 24px;
@@ -349,15 +272,8 @@
       pointer-events: none;
       z-index: 200;
     }
-
-    .toast.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .toast.error {
-      background: var(--red);
-    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.error { background: var(--red); }
   </style>
 </head>
 <body>
@@ -368,32 +284,72 @@
 
   <div class="toolbar">
     <div class="stats" id="stats">Loading&hellip;</div>
-    <button class="btn-primary" id="new-ticket-btn">+ New Repair Ticket</button>
+    <div class="toolbar-actions">
+      <input
+        type="text"
+        class="search-box"
+        id="search"
+        placeholder="Search by customer, device, or #ID&hellip;"
+      />
+      <button class="btn-primary" id="new-ticket-btn">+ New Repair Ticket</button>
+    </div>
   </div>
 
   <div class="board" id="board">
     <div class="loading">Loading tickets&hellip;</div>
   </div>
 
-  <!-- New ticket modal -->
+  <!-- Create / Edit modal -->
   <div class="modal-backdrop" id="modal">
     <div class="modal">
-      <h2>New Repair Ticket</h2>
+      <h2 id="modal-title">New Repair Ticket</h2>
+      <p class="modal-sub" id="modal-sub"></p>
 
-      <label for="f-customer">Customer name</label>
-      <input type="text" id="f-customer" placeholder="e.g. John Doe" />
+      <div class="modal-section">
+        <h3>Customer</h3>
+        <label for="f-customer">Name</label>
+        <input type="text" id="f-customer" placeholder="e.g. John Doe" />
+        <div class="modal-row">
+          <div>
+            <label for="f-phone">Phone</label>
+            <input type="tel" id="f-phone" placeholder="e.g. 08012345678" />
+          </div>
+          <div>
+            <label for="f-address">Address</label>
+            <input type="text" id="f-address" placeholder="e.g. Sabon Gari" />
+          </div>
+        </div>
+      </div>
 
-      <label for="f-device">Device *</label>
-      <input type="text" id="f-device" placeholder="e.g. Laptop, Desktop, Printer" />
+      <div class="modal-section">
+        <h3>Device &amp; Issue</h3>
+        <label for="f-device">Device *</label>
+        <input type="text" id="f-device" placeholder="e.g. Laptop, Desktop, Printer" />
+        <label for="f-issue">Issue *</label>
+        <textarea id="f-issue" placeholder="Describe the problem&hellip;"></textarea>
+        <label for="f-notes">Internal notes</label>
+        <textarea id="f-notes" placeholder="Optional — parts ordered, technician notes, etc."></textarea>
+      </div>
 
-      <label for="f-issue">Issue *</label>
-      <textarea id="f-issue" placeholder="Describe the problem&hellip;"></textarea>
+      <div class="modal-section">
+        <h3>Costs</h3>
+        <div class="modal-row">
+          <div>
+            <label for="f-labour">Labour (&#8358;)</label>
+            <input type="number" id="f-labour" min="0" step="1" placeholder="0" />
+          </div>
+          <div>
+            <label for="f-parts">Parts (&#8358;)</label>
+            <input type="number" id="f-parts" min="0" step="1" placeholder="0" />
+          </div>
+        </div>
+      </div>
 
       <div class="modal-error" id="modal-error"></div>
 
       <div class="modal-actions">
         <button class="btn-ghost" id="modal-cancel">Cancel</button>
-        <button class="btn-primary" id="modal-save">Create Ticket</button>
+        <button class="btn-primary" id="modal-save">Save</button>
       </div>
     </div>
   </div>
@@ -401,7 +357,6 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    // ---------- Config ----------
     const API = "/api/repairs";
 
     const COLUMNS = [
@@ -417,23 +372,31 @@
       cancelled: "Cancelled"
     };
 
-    // ---------- State ----------
     let tickets = [];
+    let searchTerm = "";
+    let editingId = null;
 
-    // ---------- DOM refs ----------
-    const boardEl       = document.getElementById("board");
-    const statsEl       = document.getElementById("stats");
-    const modalEl       = document.getElementById("modal");
-    const modalErrorEl  = document.getElementById("modal-error");
-    const toastEl       = document.getElementById("toast");
-    const newBtn        = document.getElementById("new-ticket-btn");
-    const cancelBtn     = document.getElementById("modal-cancel");
-    const saveBtn       = document.getElementById("modal-save");
-    const fCustomer     = document.getElementById("f-customer");
-    const fDevice       = document.getElementById("f-device");
-    const fIssue        = document.getElementById("f-issue");
+    const boardEl      = document.getElementById("board");
+    const statsEl      = document.getElementById("stats");
+    const modalEl      = document.getElementById("modal");
+    const modalTitleEl = document.getElementById("modal-title");
+    const modalSubEl   = document.getElementById("modal-sub");
+    const modalErrorEl = document.getElementById("modal-error");
+    const toastEl      = document.getElementById("toast");
+    const newBtn       = document.getElementById("new-ticket-btn");
+    const cancelBtn    = document.getElementById("modal-cancel");
+    const saveBtn      = document.getElementById("modal-save");
+    const searchEl     = document.getElementById("search");
 
-    // ---------- Utilities ----------
+    const fCustomer = document.getElementById("f-customer");
+    const fPhone    = document.getElementById("f-phone");
+    const fAddress  = document.getElementById("f-address");
+    const fDevice   = document.getElementById("f-device");
+    const fIssue    = document.getElementById("f-issue");
+    const fNotes    = document.getElementById("f-notes");
+    const fLabour   = document.getElementById("f-labour");
+    const fParts    = document.getElementById("f-parts");
+
     function escapeHtml(str) {
       if (str == null) return "";
       return String(str)
@@ -444,13 +407,16 @@
         .replace(/'/g, "&#39;");
     }
 
+    function formatMoney(n) {
+      if (n == null || isNaN(n)) return "\u20A60";
+      return "\u20A6" + Number(n).toLocaleString("en-NG", { maximumFractionDigits: 0 });
+    }
+
     function toast(message, isError = false) {
       toastEl.textContent = message;
       toastEl.className = "toast show" + (isError ? " error" : "");
       clearTimeout(toast._t);
-      toast._t = setTimeout(() => {
-        toastEl.className = "toast";
-      }, 2800);
+      toast._t = setTimeout(() => { toastEl.className = "toast"; }, 2800);
     }
 
     async function apiCall(url, options = {}) {
@@ -459,18 +425,26 @@
         ...options
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        throw new Error(data.message || `Request failed (${res.status})`);
-      }
+      if (!res.ok) throw new Error(data.message || `Request failed (${res.status})`);
       return data;
     }
 
-    // ---------- Rendering ----------
+    function matchesSearch(t) {
+      if (!searchTerm) return true;
+      const term = searchTerm.toLowerCase();
+      return (
+        String(t.id).includes(term) ||
+        (t.customerName || "").toLowerCase().includes(term) ||
+        (t.customerPhone || "").toLowerCase().includes(term) ||
+        (t.device || "").toLowerCase().includes(term) ||
+        (t.issue || "").toLowerCase().includes(term)
+      );
+    }
+
     function render() {
-      // Group tickets by status
       const grouped = { received: [], in_progress: [], completed: [] };
       for (const t of tickets) {
-        if (grouped[t.status]) grouped[t.status].push(t);
+        if (matchesSearch(t) && grouped[t.status]) grouped[t.status].push(t);
       }
 
       boardEl.innerHTML = COLUMNS.map(col => {
@@ -483,14 +457,13 @@
             </div>
             ${items.length
               ? items.map(renderCard).join("")
-              : `<div class="empty">No tickets</div>`}
+              : `<div class="empty">${searchTerm ? "No matching tickets" : "No tickets"}</div>`}
           </div>
         `;
       }).join("");
 
-      // Update stats
       const total = tickets.length;
-      const done = grouped.completed.length;
+      const done = tickets.filter(t => t.status === "completed").length;
       statsEl.innerHTML = `<strong>${total}</strong> total &middot; <strong>${done}</strong> completed`;
     }
 
@@ -499,21 +472,38 @@
         `<option value="${c.status}" ${c.status === t.status ? "selected" : ""}>${c.label}</option>`
       ).join("");
 
+      const contactBits = [];
+      if (t.customerPhone) contactBits.push(escapeHtml(t.customerPhone));
+      if (t.customerAddress) contactBits.push(escapeHtml(t.customerAddress));
+
+      const labour = Number(t.costLabour || 0);
+      const parts = Number(t.costParts || 0);
+      const totalCost = labour + parts;
+      const costBlock = totalCost > 0 ? `
+        <div class="cost">
+          <span>Labour: ${formatMoney(labour)} &middot; Parts: ${formatMoney(parts)}</span>
+          <strong>${formatMoney(totalCost)}</strong>
+        </div>
+      ` : "";
+
       return `
         <div class="card" data-id="${t.id}">
           <div class="id">#${t.id}</div>
           <div class="customer">${escapeHtml(t.customerName || "Unknown customer")}</div>
+          ${contactBits.length ? `<div class="contact">${contactBits.join(" &middot; ")}</div>` : ""}
           <div class="device">${escapeHtml(t.device)}</div>
           <div class="issue">${escapeHtml(t.issue)}</div>
+          ${t.notes ? `<div class="notes">${escapeHtml(t.notes)}</div>` : ""}
+          ${costBlock}
           <div class="actions">
             <select data-action="status" data-id="${t.id}">${options}</select>
+            <button class="btn-ghost" data-action="edit" data-id="${t.id}">Edit</button>
             <button class="btn-danger" data-action="delete" data-id="${t.id}">Delete</button>
           </div>
         </div>
       `;
     }
 
-    // ---------- Data loading ----------
     async function loadTickets() {
       try {
         const res = await apiCall(API);
@@ -524,7 +514,6 @@
       }
     }
 
-    // ---------- Actions ----------
     async function changeStatus(id, newStatus) {
       try {
         await apiCall(`${API}/${id}`, {
@@ -553,42 +542,89 @@
       }
     }
 
-    // ---------- Modal ----------
-    function openModal() {
+    function openCreateModal() {
+      editingId = null;
+      modalTitleEl.textContent = "New Repair Ticket";
+      modalSubEl.textContent = "";
       modalErrorEl.className = "modal-error";
-      modalErrorEl.textContent = "";
       fCustomer.value = "";
+      fPhone.value = "";
+      fAddress.value = "";
       fDevice.value = "";
       fIssue.value = "";
+      fNotes.value = "";
+      fLabour.value = "";
+      fParts.value = "";
+      modalEl.classList.add("open");
+      fDevice.focus();
+    }
+
+    function openEditModal(id) {
+      const t = tickets.find(x => x.id === id);
+      if (!t) return;
+      editingId = id;
+      modalTitleEl.textContent = `Edit Ticket #${id}`;
+      modalSubEl.textContent = `Status: ${STATUS_LABELS[t.status] || t.status}`;
+      modalErrorEl.className = "modal-error";
+      fCustomer.value = t.customerName || "";
+      fPhone.value = t.customerPhone || "";
+      fAddress.value = t.customerAddress || "";
+      fDevice.value = t.device || "";
+      fIssue.value = t.issue || "";
+      fNotes.value = t.notes || "";
+      fLabour.value = t.costLabour ?? "";
+      fParts.value = t.costParts ?? "";
       modalEl.classList.add("open");
       fDevice.focus();
     }
 
     function closeModal() {
       modalEl.classList.remove("open");
+      editingId = null;
+    }
+
+    function numberOrNull(v) {
+      const s = String(v).trim();
+      if (s === "") return null;
+      const n = Number(s);
+      return Number.isFinite(n) && n >= 0 ? n : null;
     }
 
     async function saveTicket() {
-      const customerName = fCustomer.value.trim();
       const device = fDevice.value.trim();
       const issue = fIssue.value.trim();
-
       if (!device || !issue) {
         modalErrorEl.textContent = "Device and issue are required.";
         modalErrorEl.className = "modal-error show";
         return;
       }
 
-      const body = { device, issue };
-      if (customerName) body.customerName = customerName;
+      const payload = {
+        customerName: fCustomer.value.trim() || null,
+        customerPhone: fPhone.value.trim() || null,
+        customerAddress: fAddress.value.trim() || null,
+        device,
+        issue,
+        notes: fNotes.value.trim() || null,
+        costLabour: numberOrNull(fLabour.value),
+        costParts: numberOrNull(fParts.value)
+      };
 
       try {
-        await apiCall(API, {
-          method: "POST",
-          body: JSON.stringify(body)
-        });
+        if (editingId) {
+          await apiCall(`${API}/${editingId}`, {
+            method: "PATCH",
+            body: JSON.stringify(payload)
+          });
+          toast(`Ticket #${editingId} updated`);
+        } else {
+          await apiCall(API, {
+            method: "POST",
+            body: JSON.stringify(payload)
+          });
+          toast("Ticket created");
+        }
         closeModal();
-        toast("Ticket created");
         loadTickets();
       } catch (err) {
         modalErrorEl.textContent = err.message;
@@ -596,46 +632,35 @@
       }
     }
 
-    // ---------- Event wiring ----------
-    newBtn.addEventListener("click", openModal);
+    newBtn.addEventListener("click", openCreateModal);
     cancelBtn.addEventListener("click", closeModal);
     saveBtn.addEventListener("click", saveTicket);
+    modalEl.addEventListener("click", (e) => { if (e.target === modalEl) closeModal(); });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
 
-    // Close modal on backdrop click
-    modalEl.addEventListener("click", (e) => {
-      if (e.target === modalEl) closeModal();
+    let searchTimer;
+    searchEl.addEventListener("input", (e) => {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(() => {
+        searchTerm = e.target.value.trim();
+        render();
+      }, 120);
     });
 
-    // Close modal on Escape
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") closeModal();
-    });
-
-    // Enter in device field jumps to issue
-    fDevice.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        fIssue.focus();
-      }
-    });
-
-    // Delegated click handler for card actions
     boardEl.addEventListener("click", (e) => {
       const btn = e.target.closest("[data-action]");
       if (!btn) return;
       const id = Number(btn.dataset.id);
       if (btn.dataset.action === "delete") deleteTicket(id);
+      if (btn.dataset.action === "edit") openEditModal(id);
     });
 
-    // Delegated change handler for status dropdown
     boardEl.addEventListener("change", (e) => {
       const sel = e.target.closest("[data-action='status']");
       if (!sel) return;
-      const id = Number(sel.dataset.id);
-      changeStatus(id, sel.value);
+      changeStatus(Number(sel.dataset.id), sel.value);
     });
 
-    // ---------- Boot ----------
     loadTickets();
   </script>
 </body>

@@ -1,3 +1,4 @@
+
 # RepairDesk Lite
 
 > A repair ticket management system for computer repair shops — track jobs from intake to completion on a simple Kanban board.
